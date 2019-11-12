@@ -1,5 +1,7 @@
 # GRpc sample project
 
+This project covers sample wallet application that is implemented by structure
+
 Modules that are used in projects are;
  - spring-boot
  - GRpc
@@ -9,20 +11,38 @@ Modules that are used in projects are;
 ##### Focused on
 
   - Protocol Buffers
-  - Executor services
+  - Multi-threads
   - Transaction handling
   - N-tier architecture
   - Interceptors
 
 #### Run the project
-Go to project folder and run
+ - Make sure that MySQL server installed on your pc
+ (https://dev.mysql.com/downloads/mysql/)
+ 
+ - Go to project folder and run
 ```sh
 gradle build
 ```
-After that download and install terminal for GRpc 
-(sample)
-```sh
+ - Get the Grpc client. I use Evans
+ (https://github.com/ktr0731/evans)
+ 
+ - Go to src/main/proto/wallet/ folder and run below command on CLI 
 
+```sh
+evans wallet.proto -p 6565
 ```
-According to default application.properties , server will run at 8282 port
-In addition, there is also .txt file in order to test bulk insert under /demoRequests/bulkInsert.txt via file upload service
+ - Following view should be appeared if everything installed properly
+ <img src="https://github.com/orkun34/GRpc/blob/master/images/evans_cli.png?sanitize=true&raw=true" />
+
+ - After that you are able to list services separately by following commands
+
+```sh
+show service
+```  
+ - If you want to run random operation with parameters (#users,#threads,#rounds),
+ ```sh
+ call ClientCLI
+ ``` 
+ It should be shown such as;
+  <img src="https://github.com/orkun34/GRpc/blob/master/images/evans_cli_2.png?sanitize=true&raw=true" />
