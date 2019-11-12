@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package wallet;
+
+option java_package = "com.wallet.rpc.wallet";
+option java_multiple_files = true;
+
+message Wallet {
+    int64 user_id = 1;
+    int64 amount = 2;
+    string currency = 3;
+}
+
+message WalletRequest{
+    Wallet wallet = 1;
+}
+
+message WalletResponse {
+    string error_msg = 1;
+}
+
+message Balance {
+    int64 user_id = 1;
+}
+
+message BalanceRequest{
+    Balance balance = 1;
+}
+
+message BalanceList{
+    int64 balance = 1;
+    string currency = 2;
+}
+
+message BalanceResponse {
+    repeated Wallet wallet = 1;
+}
+
+message ClientRequest {
+    int32 userCount = 1;
+    int32 threadPerUser = 2;
+    int32 threadPerRound =3;
+}
+
+message ClientResponse{
+    string msg = 1;
+}
+
+
+service WalletService {
+    // Unary
+    rpc Withdraw (WalletRequest) returns (WalletResponse) {
+    };
+
+    rpc Deposit (WalletRequest) returns (WalletResponse) {
+    };
+
+    rpc CheckBalance (BalanceRequest) returns (BalanceResponse) {
+    };
+
+    rpc ClientCLI (ClientRequest) returns (ClientResponse){
+    };
+}
