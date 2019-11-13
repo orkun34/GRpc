@@ -10,10 +10,27 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Repository
-public class WalletRepo {
+public class WalletRepo{
+
+    ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+
+    @PostConstruct
+    public void startTask() {
+       scheduledExecutorService.scheduleAtFixedRate(() -> {
+           System.out.println("Transaction per second ===>>>"+counter);
+           counter = 0;
+       },0,1,TimeUnit.SECONDS);
+    }
+
+    static int counter = 0;
 
 
     @Autowired
@@ -23,16 +40,13 @@ public class WalletRepo {
     private TransactionHandler transactionHandler;
 
     public void withdraw(Wallet wallet,boolean isTotalAmount) throws Exception {
+        counter++;
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
                 .addValue("USER_ID",wallet.getUserId())
                 .addValue("AMOUNT",wallet.getAmount())
                 .addValue("CURRENCY",wallet.getCurrency());
 
-        if (isTotalAmount)
-            transactionHandler.callInNewTransaction(() ->jdbcTemplate.update(
-                    "DELETE FROM BANK WHERE USER_ID = :USER_ID AND CURRENCY = :CURRENCY"
-                    ,mapSqlParameterSource));
-        else
+
         transactionHandler.callInNewTransaction(() -> jdbcTemplate.update(
                 "UPDATE BANK " +
                         "SET BALANCE = :AMOUNT " +
@@ -42,6 +56,7 @@ public class WalletRepo {
     }
 
     public BalanceResponse checkBalance(Long userId) throws Exception {
+        //counter++;
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
                 .addValue("USER_ID",userId);
 
@@ -57,6 +72,7 @@ public class WalletRepo {
     }
 
     public void deposit(Wallet wallet,boolean isPresent){
+        //counter++;
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
                 .addValue("USER_ID",wallet.getUserId())
                 .addValue("AMOUNT",wallet.getAmount())
@@ -78,9 +94,5 @@ public class WalletRepo {
     public void purgeUsers(){
         transactionHandler.runInNewTransaction(() -> jdbcTemplate.getJdbcOperations().execute("TRUNCATE TABLE BANK"));
     }
-
-
-
-
 
 }
