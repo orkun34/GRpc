@@ -20,17 +20,18 @@ import java.util.concurrent.TimeUnit;
 @Repository
 public class WalletRepo{
 
-    ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    /*ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
     @PostConstruct
     public void startTask() {
        scheduledExecutorService.scheduleAtFixedRate(() -> {
-           System.out.println("Transaction per second ===>>>"+counter);
-           counter = 0;
+           System.out.println("Transaction per second ===>>>"+(counter-diff));
+           diff = counter;
        },0,1,TimeUnit.SECONDS);
     }
 
-    static int counter = 0;
+    static long counter = 0;
+    static long diff = 0;*/
 
 
     @Autowired
@@ -40,7 +41,7 @@ public class WalletRepo{
     private TransactionHandler transactionHandler;
 
     public void withdraw(Wallet wallet,boolean isTotalAmount) throws Exception {
-        counter++;
+        //counter++;
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
                 .addValue("USER_ID",wallet.getUserId())
                 .addValue("AMOUNT",wallet.getAmount())
